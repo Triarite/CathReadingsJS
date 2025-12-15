@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CathReadings API - Raw Data Explorer</title>
+  <style>
+    body { font-family: monospace; max-width: 1200px; margin: 0 auto; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .panel { background: #252526; border: 1px solid #3e3e42; padding: 15px; border-radius: 5px; }
+    h1 { grid-column: 1 / -1; color: #4ec9b0; margin-bottom: 10px; }
+    h3 { color: #569cd6; margin-top: 0; }
+    .function-group { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #3e3e42; }
+    .function-group:last-child { border-bottom: none; }
+    .function-name { color: #ce9178; font-weight: bold; margin-bottom: 8px; }
+    button { background: #007acc; color: white; border: none; padding: 8px 12px; border-radius: 3px; cursor: pointer; margin-right: 5px; margin-bottom: 10px; font-family: monospace; font-size: 12px; }
+    button:hover { background: #005a9e; }
+    input { background: #3c3c3c; color: #d4d4d4; border: 1px solid #555; padding: 6px; border-radius: 3px; font-family: monospace; margin-right: 5px; margin-bottom: 10px; }
+    #output { background: #1e1e1e; border: 1px solid #555; padding: 12px; border-radius: 3px; overflow-x: auto; max-height: 600px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; font-size: 12px; line-height: 1.4; }
+    .error { color: #f48771; }
+    .success { color: #6a9955; }
+    .label { color: #9cdcfe; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <h1>⛪ CathReadings API - Raw Data Explorer</h1>
+  <div class="container">
+    <div class="panel">
+      <h3>Available Functions</h3>
+      <div class="function-group">
+        <div class="function-name">getToday()</div>
+        <button onclick="callFunction('getToday')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Fetch today's readings</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">getTomorrow()</div>
+        <button onclick="callFunction('getTomorrow')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Fetch tomorrow's readings</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">getReadings(date)</div>
+        <input type="text" id="date-input" placeholder="MMDDYY" maxlength="6">
+        <button onclick="callFunction('getReadings')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Fetch readings for specific date</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">getSeason(date)</div>
+        <input type="text" id="season-input" placeholder="MMDDYY" maxlength="6">
+        <button onclick="callFunction('getSeason')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Get liturgical season for date</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">getReadingsByDaysOffset(days)</div>
+        <input type="number" id="offset-input" placeholder="days offset" min="-365" max="365">
+        <button onclick="callFunction('getReadingsByDaysOffset')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Fetch readings relative to today</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">getDemoData()</div>
+        <button onclick="callFunction('getDemoData')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Get demo readings (no network)</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">formatDateForUrl(date)</div>
+        <input type="text" id="format-input" placeholder="yyyy-mm-dd or MMDDYY">
+        <button onclick="callFunction('formatDateForUrl')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Convert date to MMDDYY format</p>
+      </div>
+      <div class="function-group">
+        <div class="function-name">parseDateString(dateStr)</div>
+        <input type="text" id="parse-input" placeholder="MMDDYY" maxlength="6">
+        <button onclick="callFunction('parseDateString')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Parse MMDDYY to Date object</p>
+      </div>
+      <button onclick="clearOutput()" style="background: #555; width: 100%;">Clear Output</button>
+    </div>
+    <div class="panel">
+      <h3>Output</h3>
+      <div id="output">Ready...</div>
+    </div>
+  </div>
+
+  <script src="cathReadings.js"></script>
+  <script>
+    const api = new CathReadings();
+    const output = document.getElementById('output');
+
+    function log(msg, isError = false) {
+      const timestamp = new Date().toLocaleTimeString();
+      const className = isError ? 'error' : 'success';
+      output.innerHTML += `<span class="${className}">[${timestamp}]</span> ${escapeHtml(msg)}\n`;
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatJson(obj) {
+      return JSON.stringify(obj, null, 2);
+    }
+
+    async function callFunction(funcName) {
+      output.innerHTML = '';
+      log(`Calling ${funcName}()...`);
+      try {
+        let result;
+        if (funcName === 'getToday') {
+          result = await api.getToday();
+        } else if (funcName === 'getTomorrow') {
+          result = await api.getTomorrow();
+        } else if (funcName === 'getReadings') {
+          const date = document.getElementById('date-input').value.trim();
+          if (!date) throw new Error('Enter date in MMDDYY format');
+          result = await api.getReadings(date);
+        } else if (funcName === 'getSeason') {
+          const date = document.getElementById('season-input').value.trim();
+          if (!date) throw new Error('Enter date in MMDDYY format');
+          result = await api.getSeason(date);
+        } else if (funcName === 'getReadingsByDaysOffset') {
+          const offset = parseInt(document.getElementById('offset-input').value, 10);
+          if (isNaN(offset)) throw new Error('Enter a valid number');
+          result = await api.getReadingsByDaysOffset(offset);
+        } else if (funcName === 'getDemoData') {
+          result = CathReadings.getDemoData();
+        } else if (funcName === 'formatDateForUrl') {
+          const dateStr = document.getElementById('format-input').value.trim();
+          if (!dateStr) throw new Error('Enter a date');
+          const date = dateStr.includes('-') ? new Date(dateStr) : CathReadings.parseDateString(dateStr);
+          result = CathReadings.formatDateForUrl(date);
+        } else if (funcName === 'parseDateString') {
+          const dateStr = document.getElementById('parse-input').value.trim();
+          if (!dateStr) throw new Error('Enter date in MMDDYY format');
+          result = CathReadings.parseDateString(dateStr);
+        } else {
+          throw new Error('Unknown function');
+        }
+        log(`Result:\n${formatJson(result)}`);
+      } catch (error) {
+        log(`Error: ${error.message}`, true);
+      }
+    }
+
+    function clearOutput() {
+      output.innerHTML = 'Ready...';
+    }
+
+    // Ready
+    log('CathReadings API ready. Click a function to run it.');
+  </script>
+</body>
+</html>

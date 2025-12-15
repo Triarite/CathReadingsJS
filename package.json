@@ -1,0 +1,16 @@
+{
+  "name": "cath-readings-js",
+  "version": "1.0.0",
+  "description": "Simple API for Catholic daily readings from USCCB",
+  "main": "cathReadings.js",
+  "scripts": {
+    "test": "node tests/test.js",
+    "example": "node example-node.js"
+  },
+  "keywords": ["catholic", "bible", "readings", "usccb"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
