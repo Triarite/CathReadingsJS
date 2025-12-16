@@ -42,6 +42,9 @@ await api.getTomorrow();
 // Specific date (MMDDYY)
 await api.getReadings('121525');
 
+// Get liturgical season for a date
+await api.getSeason('121525');
+
 // Relative date
 await api.getReadingsByDaysOffset(-7);
 
@@ -56,6 +59,7 @@ CathReadings.getDemoData();
   date: "2025-12-15",
   displayDate: "December 15, 2025",
   title: "Monday of the Third Week of Advent",
+  season: "Advent",
   lectionary: "187",
   readings: [
     {
@@ -66,6 +70,12 @@ CathReadings.getDemoData();
     }
   ]
 }
+```
+
+`getSeason()` returns just the season string:
+```javascript
+const season = await api.getSeason('121525');
+// "Advent"
 ```
 
 ## CORS Notes
