@@ -1,14 +1,14 @@
 # CathReadingsJS
 
-Simple API for Catholic daily readings from USCCB.
+Simple, vibe-coded API for Catholic daily readings from the USCCB website.
 
 ## Features
 
-- ✅ Parse USCCB readings from HTML
-- ✅ Works in browser (with CORS proxy) and Node.js
-- ✅ Request caching for fast repeated lookups
-- ✅ 6-second timeout to fail fast on network issues
-- ✅ Auto-fallback to demo data on error (browser)
+- Parse USCCB readings from HTML
+- Works in browser (with CORS proxy) and Node.js
+- Request caching for fast repeated lookups
+- 6-second timeout to fail fast on network issues
+- Auto-fallback to demo data on error (browser)
 
 ## Usage
 
@@ -78,8 +78,8 @@ This project is provided as-is for personal use. The readings data is copyright 
 
 ## Notes
 
-- USCCB may not have readings for all dates
-- The API respects USCCB's terms of service
+- USCCB doesn't have readings for all dates. For exmaple, this can't get readings for Christmases since the main page subdivides into multiple masses.
+- This API respects USCCB's terms of service
 - Consider caching results to reduce server load
 - Date parsing uses local timezone
 
