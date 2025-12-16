@@ -45,6 +45,9 @@ await api.getReadings('121525');
 // Get liturgical season for a date
 await api.getSeason('121525');
 
+// Get liturgical rank for a date
+await api.getRank('121525');
+
 // Relative date
 await api.getReadingsByDaysOffset(-7);
 
@@ -77,6 +80,12 @@ CathReadings.getDemoData();
 ```javascript
 const season = await api.getSeason('121525');
 // "Advent"
+```
+
+`getRank()` returns the liturgical rank:
+```javascript
+const rank = await api.getRank('121525');
+// "Ferial"
 ```
 
 ## Liturgical Rank
