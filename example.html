@@ -50,6 +50,12 @@
         <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Get liturgical season for date</p>
       </div>
       <div class="function-group">
+        <div class="function-name">getRank(date)</div>
+        <input type="text" id="rank-input" placeholder="MMDDYY" maxlength="6">
+        <button onclick="callFunction('getRank')">Run</button>
+        <p style="font-size: 11px; color: #858585; margin: 5px 0 0 0;">Get liturgical rank (Solemnity, Feast, Memorial, Ferial)</p>
+      </div>
+      <div class="function-group">
         <div class="function-name">getReadingsByDaysOffset(days)</div>
         <input type="number" id="offset-input" placeholder="days offset" min="-365" max="365">
         <button onclick="callFunction('getReadingsByDaysOffset')">Run</button>
@@ -119,6 +125,10 @@
           const date = document.getElementById('season-input').value.trim();
           if (!date) throw new Error('Enter date in MMDDYY format');
           result = await api.getSeason(date);
+        } else if (funcName === 'getRank') {
+          const date = document.getElementById('rank-input').value.trim();
+          if (!date) throw new Error('Enter date in MMDDYY format');
+          result = await api.getRank(date);
         } else if (funcName === 'getReadingsByDaysOffset') {
           const offset = parseInt(document.getElementById('offset-input').value, 10);
           if (isNaN(offset)) throw new Error('Enter a valid number');

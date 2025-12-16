@@ -237,6 +237,7 @@ class CathReadings {
       }),
       title: title,
       season: this.extractSeason(title),
+      rank: this.extractLiturgicalRank(title, doc),
       lectionary: this.extractLectionary(doc),
       readings: []
     };
@@ -279,6 +280,53 @@ class CathReadings {
     if (title.includes('Ordinary Time')) return 'Ordinary Time';
     
     return 'Ordinary Time';
+  }
+
+  /**
+   * Extracts the liturgical rank from the title and context
+   * Solemnity: Most important (Christmas, Easter, Pentecost, patron saints)
+   * Feast: Important celebration of a saint or mystery
+   * Memorial: Commemoration of a saint (lower rank)
+   * Ferial: Weekday with no special observance
+   * @param {string} title - The liturgical title
+   * @param {Document} doc - The parsed HTML document
+   * @returns {string} The rank ("Solemnity", "Feast", "Memorial", or "Ferial")
+   */
+  extractLiturgicalRank(title, doc) {
+    if (!title) return 'Ferial';
+
+    const titleLower = title.toLowerCase();
+
+    // Solemnity: Major feasts and seasons
+    if (titleLower.includes('solemnity') ||
+        titleLower.includes('christmas') ||
+        titleLower.includes('epiphany') ||
+        titleLower.includes('easter') ||
+        titleLower.includes('pentecost') ||
+        titleLower.includes('ascension') ||
+        titleLower.includes('assumption') ||
+        titleLower.includes('all saints') ||
+        titleLower.includes('immaculate conception')) {
+      return 'Solemnity';
+    }
+
+    // Feast: Important but lower than solemnity
+    if (titleLower.includes('feast')) {
+      return 'Feast';
+    }
+
+    // Memorial: Commemorations of saints
+    if (titleLower.includes('memorial')) {
+      return 'Memorial';
+    }
+
+    // St./Saint names without explicit rank are usually memorials
+    if (titleLower.includes('st. ') || titleLower.includes('saint ')) {
+      return 'Memorial';
+    }
+
+    // Default: Ferial (weekday)
+    return 'Ferial';
   }
 
   /**
@@ -401,6 +449,16 @@ class CathReadings {
   }
 
   /**
+   * Gets the liturgical rank for a given date
+   * @param {Date|string} date - Date object or MMDDYY string
+   * @returns {Promise<string>} The liturgical rank ("Solemnity", "Feast", "Memorial", or "Ferial")
+   */
+  async getRank(date) {
+    const readings = await this.getReadings(date);
+    return readings.rank;
+  }
+
+  /**
    * Returns demo data for testing (December 15, 2025)
    * Useful for development and testing CORS issues
    * @returns {Object} Demo readings data
@@ -411,6 +469,7 @@ class CathReadings {
       displayDate: "December 15, 2025",
       title: "Monday of the Third Week of Advent",
       season: "Advent",
+      rank: "Ferial",
       lectionary: "187",
       readings: [
         {

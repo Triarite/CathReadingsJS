@@ -60,6 +60,7 @@ CathReadings.getDemoData();
   displayDate: "December 15, 2025",
   title: "Monday of the Third Week of Advent",
   season: "Advent",
+  rank: "Ferial",
   lectionary: "187",
   readings: [
     {
@@ -77,6 +78,15 @@ CathReadings.getDemoData();
 const season = await api.getSeason('121525');
 // "Advent"
 ```
+
+## Liturgical Rank
+
+Each reading includes a `rank` field indicating the liturgical importance of the day:
+
+- **Solemnity**: Highest rank. Major feasts (Christmas, Easter, Pentecost, Epiphany, Assumption, All Saints, Immaculate Conception).
+- **Feast**: Important celebration of a saint or mystery, lower than Solemnity.
+- **Memorial**: Commemoration of a saint, typically with limited readings.
+- **Ferial**: A regular weekday with no special observance; follows the seasonal liturgy.
 
 ## CORS Notes
 
