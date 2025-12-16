@@ -284,7 +284,7 @@ class CathReadings {
 
   /**
    * Extracts the liturgical rank from the title and context
-   * Solemnity: Most important (Christmas, Easter, Pentecost, patron saints)
+   * Solemnity: Most important (Christmas, Easter, Pentecost, patron saints), also includes Sundays
    * Feast: Important celebration of a saint or mystery
    * Memorial: Commemoration of a saint (lower rank)
    * Ferial: Weekday with no special observance
@@ -306,7 +306,8 @@ class CathReadings {
         titleLower.includes('ascension') ||
         titleLower.includes('assumption') ||
         titleLower.includes('all saints') ||
-        titleLower.includes('immaculate conception')) {
+        titleLower.includes('immaculate conception') ||
+        titleLower.includes('sunday')) {
       return 'Solemnity';
     }
 
