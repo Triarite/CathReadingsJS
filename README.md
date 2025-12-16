@@ -1,6 +1,6 @@
 # CathReadingsJS
 
-Simple, vibe-coded API for Catholic daily readings from the USCCB website.
+Simple, vibe-coded API for Roman Catholic liturgical from the USCCB website. Can get readings, liturgical season, and rank.
 
 ## Features
 
