@@ -108,7 +108,6 @@ This project is provided as-is for personal use. The readings data is copyright 
 ## Notes
 
 - USCCB doesn't have readings for all dates. For exmaple, this can't get readings for Christmases since the main page subdivides into multiple masses.
-- This API respects USCCB's terms of service
 - Consider caching results to reduce server load
 - Date parsing uses local timezone
 
